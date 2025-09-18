@@ -1,5 +1,7 @@
 # Panorama Image Management Platform
 
+[**中文**](./README_zh.md)
+
 A panorama and regular image management platform based on SpringBoot, supporting features like automatic panorama image slicing, user registration/login, image upload and sharing, etc.
 
 **Supports displaying very large images (>200MB) (whether it displays properly depends on computer performance).**
