@@ -375,7 +375,7 @@ For detailed configuration, please refer to the `application.yml` file.
 
 ## Inspiration
 
-This project was inspired by panorama image sharing platforms such as DJI Sky City and 720 Cloud.
+This project was inspired by panorama image sharing platforms such as DJI Skypixel and 720yun.
 
 ## License
 
