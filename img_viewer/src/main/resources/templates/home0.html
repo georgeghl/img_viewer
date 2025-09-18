@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+<p id="ppp"></p>
+<button onclick="logout()">logout</button>
+</body>
+<script>
+    var ppp=document.getElementById("ppp")
+    var token = sessionStorage.getItem("token")
+    ppp.innerHTML=token
+
+    function logout(){
+        sessionStorage.clear();
+        window.location.replace("/");
+    }
+</script>
+</html>

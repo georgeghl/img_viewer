@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.clarkhg.img_viewer.mapper.ImageMapper">
+    <insert id="insertImage" parameterType="top.clarkhg.img_viewer.pojo.Image" useGeneratedKeys="true" keyProperty="imageId" keyColumn="image_id">
+        INSERT INTO image(image_name, description, type_id, public, category_id, original_filename, gps) VALUES(
+            #{imageName},
+            #{description},
+            #{typeId},
+            #{public_},
+            #{categoryId},
+            #{originalFilename},
+            #{gps}
+        )
+    </insert>
+
+    <insert id="insertUsernameImageId">
+        INSERT INTO username_image_id VALUES(#{username},#{imageId})
+    </insert>
+
+    <update id="updateImageNotPublic">
+        UPDATE image SET public=0 WHERE image_id=#{imageId}
+    </update>
+
+    <update id="updateImage" parameterType="top.clarkhg.img_viewer.pojo.Image">
+        UPDATE 
+            image 
+        SET 
+            image_name=#{imageName}, 
+            description=#{description}, 
+            category_id=#{categoryId}, 
+            type_id=#{typeId}, 
+            public=#{public_} 
+        WHERE 
+            image_id=#{imageId}
+    </update>
+
+    <update id="updateImageGps" parameterType="top.clarkhg.img_viewer.pojo.Image">
+        UPDATE 
+            image 
+        SET 
+            gps=#{gps} 
+        WHERE 
+            image_id=#{imageId}
+    </update>
+
+    <select id="selectImageByImageId" resultType="top.clarkhg.img_viewer.pojo.Image">
+        SELECT
+            image.image_id AS imageId,
+            image.image_name AS imageName,
+            image.description AS description,
+            image.type_id AS typeId,
+            image.public AS public_,
+            image.category_id AS categoryId,
+            image.original_filename AS originalFilename, 
+            image.gps AS gps 
+        FROM
+            image
+        WHERE
+            image.image_id=#{imageId}
+    </select>
+
+    <select id="selectImageAndOwnerByImageId" resultType="top.clarkhg.img_viewer.pojo.Image">
+        SELECT
+            image.image_id AS imageId, 
+            image.image_name AS imageName, 
+            image.description AS description, 
+            image.type_id AS typeId, 
+            image.public AS public_, 
+            image.category_id AS categoryId, 
+            image.original_filename AS originalFilename, 
+            image.gps AS gps, 
+            username_image_id.username AS ownerUsername, 
+            type_id_type_name.type_name AS typeName, 
+            category_id_category_name.category_name AS categoryName
+        FROM
+            image
+            LEFT JOIN
+            (
+                username_image_id
+            )
+            ON 
+                image.image_id = username_image_id.image_id
+            LEFT JOIN
+            (
+                type_id_type_name
+            )
+            ON 
+                image.type_id = type_id_type_name.type_id
+            LEFT JOIN
+            (
+                category_id_category_name
+            )
+            ON 
+                image.category_id = category_id_category_name.category_id
+        WHERE
+            image.image_id =  #{imageId}
+    </select>
+
+
+    <select id="selectPublicImageCount" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            image
+        WHERE
+            image.public = 1 
+        
+    </select>
+
+
+    <select id="selectPublicImages" resultType="top.clarkhg.img_viewer.pojo.Image">
+        SELECT
+            image.image_id AS imageId,
+            image.image_name AS imageName,
+            image.description AS description,
+            image.type_id AS typeId,
+            type_id_type_name.type_name AS typeName,
+            image.public AS public_
+        FROM
+            image
+            LEFT JOIN 
+            ( 
+                type_id_type_name 
+            )
+            ON image.type_id = type_id_type_name.type_id 
+        WHERE
+            image.public = 1 
+        
+    </select>
+
+    <select id="selectPublicImagesLimit" resultType="top.clarkhg.img_viewer.pojo.Image">
+        SELECT
+            image.image_id AS imageId,
+            image.image_name AS imageName,
+            image.description AS description,
+            image.type_id AS typeId,
+            type_id_type_name.type_name AS typeName,
+            image.public AS public_
+        FROM
+            image
+            LEFT JOIN 
+            ( 
+                type_id_type_name 
+            ) 
+            ON image.type_id = type_id_type_name.type_id 
+        WHERE
+            image.public = 1 
+        LIMIT #{offset}, #{limit}
+    </select>
+
+
+    <select id="selectImageCountByUsername" resultType="int">
+        SELECT
+            COUNT(image.image_id) AS cnt
+        FROM
+            username_image_id
+            LEFT JOIN
+            (
+                image
+            )
+            ON 
+                username_image_id.image_id = image.image_id
+            LEFT JOIN
+            (
+                type_id_type_name
+            )
+            ON 
+                image.type_id = type_id_type_name.type_id
+        WHERE
+            username_image_id.username = #{username}
+    </select>
+
+
+    <select id="selectImagesByUsername" resultType="top.clarkhg.img_viewer.pojo.Image">
+        SELECT
+            image.image_id AS imageId,
+            image.image_name AS imageName,
+            image.description AS description,
+            image.type_id AS typeId,
+            type_id_type_name.type_name AS typeName,
+            image.public AS public_ 
+        FROM
+            username_image_id
+            LEFT JOIN
+            (
+                image
+            )
+            ON 
+                username_image_id.image_id = image.image_id
+            LEFT JOIN
+            (
+                type_id_type_name
+            )
+            ON 
+                image.type_id = type_id_type_name.type_id
+        WHERE
+            username_image_id.username = #{username}
+    </select>
+
+
+    <select id="selectImagesByUsernameLimit" resultType="top.clarkhg.img_viewer.pojo.Image">
+        SELECT
+            image.image_id AS imageId,
+            image.image_name AS imageName,
+            image.description AS description,
+            image.type_id AS typeId,
+            type_id_type_name.type_name AS typeName,
+            image.public AS public_ 
+        FROM
+            username_image_id
+            LEFT JOIN
+            (
+                image
+            )
+            ON 
+                username_image_id.image_id = image.image_id
+            LEFT JOIN
+            (
+                type_id_type_name
+            )
+            ON 
+                image.type_id = type_id_type_name.type_id
+        WHERE
+            username_image_id.username = #{username}
+        LIMIT #{offset}, #{limit}
+    </select>
+
+
+
+    <delete id="deleteImage">
+        DELETE FROM image WHERE image.image_id = #{imageId}
+    </delete>
+    <delete id="deleteUsernameImageId">
+        DELETE FROM username_image_id WHERE username_image_id.username = #{username} AND username_image_id.image_id = #{imageId}
+    </delete>
+</mapper>

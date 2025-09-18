@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.clarkhg.img_viewer.mapper.CaptchaCodeMapper">
+    <select id="selectCaptchaCodeByEmail" resultType="top.clarkhg.img_viewer.pojo.CaptchaCode">
+        SELECT 
+            email AS email, 
+            captcha_code AS captchaCode 
+        FROM 
+            captcha_code 
+        WHERE 
+            email=#{email}
+    </select>
+
+    <insert id="insertCaptchaCode" parameterType="top.clarkhg.img_viewer.pojo.CaptchaCode">
+        INSERT INTO 
+            captcha_code 
+        VALUES(
+            #{email},
+            #{captchaCode}
+        )
+    </insert>
+
+    <update id="updateCaptchaCode" parameterType="top.clarkhg.img_viewer.pojo.CaptchaCode">
+        UPDATE 
+            captcha_code 
+        SET 
+            email=#{email}, 
+            captcha_code=#{captchaCode} 
+        WHERE 
+            email=#{email}
+    </update>
+</mapper>

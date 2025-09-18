@@ -1,0 +1,43 @@
+spring:
+  mail:
+    host: smtp.xx.com
+    username: YourUsername
+    password: YourPassword
+    port: 25
+    protocol: smtp
+    default-encoding: UTF-8
+  # 使用SQLite
+  datasource: 
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite::resource:img_viewer.db
+    #username:
+    #password: 12345678
+  servlet: 
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  web: 
+    resources: 
+      # 这里手动指定了本地上传路径到暂存路径，避免上传时图片静态资源占用过大
+      static-locations: "classpath:static/,file:C:/ImageViewer/resources/"
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+    
+server:
+  address: 0.0.0.0
+  port: 9999  # 默认端口
+  
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: top.clarkhg.img_viewer.pojo
+
+# slf4j日志配置
+logging:
+  # 配置级别
+  level:
+    root: info
+    #root: debug
+    #分包配置级别，即不同的目录下可以使用不同的级别
+    '[top.clarkhg.img_viewer]': info

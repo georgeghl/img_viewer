@@ -1,0 +1,37 @@
+<!doctype html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta name="author" content="George Harvey Lawrence"/>
+    <link rel="shortcut icon" href="favicon.ico"/>
+    <link rel="stylesheet" href="inc/style.css" type="text/css"/>
+    <title>PanoramaViewer</title>
+</head>
+
+<body id="index">
+
+<h1 class="song">全景浏览器 <strong>*</strong></h1>
+<h5>使用以下设备可以获得更好视觉效果</h5>
+<img src="images/vr_device.png" alt="VR Device">
+<script src="inc/pano.js"></script>
+<script src="inc/jquery.js"></script>
+<script src="inc/jquery_sys.js"></script>
+<ul class="pano_list">
+<li class="pano_title">图像列表</li>
+<!--<li><a href="map_pano?v=cquhx1">重庆大学虎溪校区</a></li>-->
+
+<ul class="pano_list" >
+    <li th:each="image:${images}"><a th:href="'map_pano?v='+${image.imageId}" th:text="${image.imageName}"></a></li>
+</ul>
+</ul>
+<a style="margin-left:3%;" href="/login">用户登录</a>
+</body>
+
+</html>

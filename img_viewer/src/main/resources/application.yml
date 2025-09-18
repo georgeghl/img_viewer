@@ -1,0 +1,7 @@
+spring:
+    profiles:
+        # active: prod_mysql
+        # active: prod_sqlite
+        active: dev_sqlite
+        # active: dev_mysql
+        # WARNING: Current version do not support postgresql, there're errors in Mappers.

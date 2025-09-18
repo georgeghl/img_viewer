@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="top.clarkhg.img_viewer.mapper.MyConfigItemMapper">
+    <insert id="insertConfigItem" parameterType="top.clarkhg.img_viewer.pojo.MyConfigItem">
+        INSERT INTO config_item VALUES( #{name}, #{value})
+    </insert>
+
+    <select id="selectConfigItem" resultType="top.clarkhg.img_viewer.pojo.MyConfigItem">
+        SELECT
+            config_item.`name` AS `name`,
+            config_item.`value` AS `value`
+        FROM
+            config_item
+        WHERE name=#{name}
+    </select>
+
+    <!-- <select id="selectConfigValueByName" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT
+            config_item.value AS value
+        FROM
+            config_item
+        WHERE name=#{name}
+    </select> -->
+
+    <select id="selectConfigValueByName" parameterType="string" resultType="string">
+        SELECT
+            config_item.`value` AS `value`
+        FROM
+            config_item
+        WHERE
+            config_item.`name` = #{name}
+    </select>
+
+    <update id="updateConfigItem" parameterType="top.clarkhg.img_viewer.pojo.MyConfigItem">
+        UPDATE config_item SET value=#{value} WHERE name=#{name}
+    </update>
+</mapper>

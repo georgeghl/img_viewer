@@ -1,0 +1,58 @@
+spring:
+  mail:
+    host: smtp.xx.com
+    username: YourUsername
+    password: YourPassword
+    port: 25
+    protocol: smtp
+    default-encoding: UTF-8
+  # 使用MySQL
+  datasource:  
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/img_viewer?characterEncoding=utf8&serverTimezone=UTC
+    username: root
+    password: 12345678
+    type: com.zaxxer.hikari.HikariDataSource #数据源类型
+    hikari:
+      pool-name: ---------------------------------------top.clarkhg.img_viewer-----------------------------------------------
+      maximum-pool-size: 12 #最大连接数，小于等于0会被重置为默认值10；大于零小于1会被重置为minimum-idle的值
+      connection-timeout: 60000 #连接超时时间:毫秒，小于250毫秒，否则被重置为默认值30秒
+      minimum-idle: 10 #最小空闲连接，默认值10，小于0或大于maximum-pool-size，都会重置为maximum-pool-size
+      #空闲连接超时时间，默认值600000（10分钟），大于等于max-lifetime且max-lifetime>0，会被重置为0；不等于0且小于10秒，会被重置为10秒。
+      # 只有空闲连接数大于最大连接数且空闲时间超过该值，才会被释放
+      idle-timeout: 500000
+      #连接最大存活时间.不等于0且小于30秒，会被重置为默认值30分钟.设置应该比mysql设置的超时时间短
+      max-lifetime: 540000
+      #连接测试查询
+      connection-test-query: SELECT 1
+  servlet: 
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  # web: 
+    # resources: 
+      # 这里手动指定了本地上传路径到暂存路径，避免上传时图片静态资源占用过大
+      # static-locations: "classpath:static/,file:C:/ImageViewer/resources/"
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+    
+server:
+  address: 0.0.0.0
+  port: 9999  # 默认端口
+  
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: top.clarkhg.img_viewer.pojo
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+# slf4j日志配置
+logging:
+  # 配置级别
+  level:
+    root: info
+    #root: debug
+    #分包配置级别，即不同的目录下可以使用不同的级别
+    '[top.clarkhg.img_viewer]': debug

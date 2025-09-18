@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "ImageUtil",
+            "request": "launch",
+            "mainClass": "top.clarkhg.img_viewer.util.ImageUtil",
+            "projectName": "img_viewer"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ImgViewerApplication<img_viewer>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "top.clarkhg.img_viewer.ImgViewerApplication",
+            "projectName": "img_viewer",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

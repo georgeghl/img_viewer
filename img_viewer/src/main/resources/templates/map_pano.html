@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+    <meta name="author" content="clarkhg（clarkhg@qq.com）" />
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="stylesheet" href="inc/style.css" type="text/css" />
+    <title>PanoramaViewer</title>
+</head>
+
+<body id="map_pano">
+
+    <span class="map">
+        <div id="pano"></div>
+        <!-- 添加显示图片信息的区域 -->
+        <style>
+            /* 样式用于定位图片信息的位置 */
+            #imageInfo {
+                position: absolute;
+                top: 3%; /* 距离顶部的距离 */
+                left: 3cm; /* 50% 水平居中 */
+                /*transform: translateX(-50%);*/ /* 水平居中 */
+                background-color: rgba(255, 255, 255, 0.7); /* 设置背景色并透明度 */
+                padding: 10px; /* 设置内边距 */
+                width:20%;
+                border-radius: 5px; /* 圆角 */
+                text-align: center; /* 文本居中 */
+            }
+            /* 让段落能够自动换行 */
+            .infop {
+                word-wrap: break-word;
+                white-space: pre-wrap;
+                display: -webkit-box; /* 作为弹性盒子模型 */
+                -webkit-box-orient: vertical; /* 设置或旋转盒子的子元素排列方式 */
+                -webkit-line-clamp: 3; /* 限制在3行 */
+                overflow: hidden; /* 隐藏溢出的内容 */
+                text-overflow: ellipsis; /* 用省略号表示溢出的内容 */
+                line-height: 1.5; /* 根据实际行高调整 */
+                max-height: 4.5em; /* 3行文本的最大高度 */
+            }
+            
+            /* 确保GPS信息不受影响 */
+            .infop:last-child {
+                -webkit-line-clamp: none;
+                max-height: none;
+            }
+        </style>
+        <div id="imageInfo">
+            <p class="infop">图像名称: [[${image.imageName}]]</p>
+            <p class="infop">种类: [[${image.typeName}]]</p>
+            <p class="infop">类别: [[${image.categoryName}]]</p>
+            <p class="infop">作者: [[${image.ownerUsername}]]</p>
+            <!-- GPS信息不使用-webkit-line-clamp属性 -->
+            <p class="infop" style="-webkit-line-clamp: none; max-height: none;">GPS: [[${image.gps}]]</p>
+            <p class="infop">简介: [[${image.description}]]</p>
+        </div>
+    </span>
+
+    <script src="inc/pano.js"></script>
+    <script src="inc/jquery.js"></script>
+    <script src="inc/jquery_sys.js"></script>
+
+</body>
+
+</html>
