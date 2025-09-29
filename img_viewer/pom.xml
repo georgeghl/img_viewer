@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>top.clarkhg</groupId>
 	<artifactId>img_viewer</artifactId>
-	<version>1.1.1</version>
+	<version>2.0.1</version>
 	<name>img_viewer</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>

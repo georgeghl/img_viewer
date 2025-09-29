@@ -8,13 +8,12 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
-import top.clarkhg.img_viewer.controller.PathController;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TokenUtil {
-	private static Logger logger = LoggerFactory.getLogger(PathController.class);
+	private static Logger logger = LoggerFactory.getLogger(TokenUtil.class);
 	public static String SECRET = "sdjhakdhajdklsl;o653632AFEGasdai2uo39.'l[l;','u8hiuhH";
 
 	public static String genToken(String username, String password) {
@@ -27,7 +26,7 @@ public class TokenUtil {
 				.sign(Algorithm.HMAC256(SECRET));
 	}
 
-	// 拿 username
+	// 拿 teacher 或 student 的 id
 	public static String getUsername(String token) {
 		try {
 			DecodedJWT djwt = JWT.decode(token);
@@ -41,7 +40,7 @@ public class TokenUtil {
 		}
 	}
 
-	// role
+	// role:0-student,1-teacher
 	public static Integer getRole(String token) {
 		try {
 			DecodedJWT djwt = JWT.decode(token);

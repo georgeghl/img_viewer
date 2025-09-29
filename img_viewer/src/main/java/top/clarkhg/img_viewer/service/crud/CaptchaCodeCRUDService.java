@@ -15,14 +15,14 @@ import javax.mail.internet.MimeUtility;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 
-import top.clarkhg.img_viewer.controller.UserServiceController;
+
 import top.clarkhg.img_viewer.mapper.CaptchaCodeMapper;
 import top.clarkhg.img_viewer.pojo.CaptchaCode;
 import top.clarkhg.img_viewer.util.CaptchaCodeUtil;
 
 @Service
 public class CaptchaCodeCRUDService {
-    private Logger logger = LoggerFactory.getLogger(UserServiceController.class);
+    private Logger logger = LoggerFactory.getLogger(CaptchaCodeCRUDService.class);
     @Autowired
     private CaptchaCodeMapper captchaCodeMapper;
     @Autowired
@@ -50,12 +50,12 @@ public class CaptchaCodeCRUDService {
         }
         try {
             SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-            // 1.发件人昵称
+            // 发件人昵称
             String name = MimeUtility.encodeText("ImageViewer");
-            // 2.发件人邮箱
+            // 发件人邮箱
             simpleMailMessage
                     .setFrom(String.valueOf(new InternetAddress(name + "<" + "flippedclass0418@163.com" + ">")));
-            // 3.收件人
+            // 收件人
             simpleMailMessage.setTo(email);
             simpleMailMessage.setSubject("ImageViewer Captcha Code");
             // 4.设置邮件内容

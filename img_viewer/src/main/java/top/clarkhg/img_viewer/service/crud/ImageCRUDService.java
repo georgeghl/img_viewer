@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import top.clarkhg.img_viewer.controller.UserServiceController;
 import top.clarkhg.img_viewer.mapper.ImageMapper;
 import top.clarkhg.img_viewer.pojo.Image;
 
@@ -19,7 +18,7 @@ public class ImageCRUDService {
     @Autowired
     private ImageMapper imageMapper;
 
-    private Logger logger = LoggerFactory.getLogger(UserServiceController.class);
+    private Logger logger = LoggerFactory.getLogger(ImageCRUDService.class);
     public int getAllPublicImageCount() {
         return imageMapper.selectPublicImageCount();
     }
@@ -31,7 +30,7 @@ public class ImageCRUDService {
 
     @Transactional
     public List<Image> getAllPublicImagesWithPaging(int page) {
-        return imageMapper.selectPublicImagesLimit((page-1)*25, 25);
+        return imageMapper.selectPublicImagesLimit((page-1)*40, 40);
     }
 
     @Transactional
@@ -46,7 +45,7 @@ public class ImageCRUDService {
 
     @Transactional
     public List<Image> getImagesByUsernameWithPaging(String username, int page) {
-        return imageMapper.selectImagesByUsernameLimit(username,(page-1)*25, 25);
+        return imageMapper.selectImagesByUsernameLimit(username,(page-1)*40, 40);
     }
 
     @Transactional

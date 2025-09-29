@@ -1,217 +1,275 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>用户注册</title>
-    <!-- plugins:css -->
-    <link
-      rel="stylesheet"
-      href="majestic/vendors/mdi/css/materialdesignicons.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="majestic/vendors/base/vendor.bundle.base.css"
-    />
-    <!-- endinject -->
-    <!-- plugin css for this page -->
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <link rel="stylesheet" href="majestic/css/style.css" />
-    <!-- endinject -->
-    <link rel="shortcut icon" href="majestic/images/favicon.png" />
-    <script src="js/sweetalert2@11.js"></script>
-  </head>
-
-  <body>
-    <div class="container-scroller">
-      <div class="container-fluid page-body-wrapper full-page-wrapper">
-        <div class="content-wrapper d-flex align-items-center auth px-0">
-          <div class="row w-100 mx-0">
-            <div class="col-lg-4 mx-auto">
-              <div class="auth-form-light text-left py-5 px-4 px-sm-5">
-                <div class="brand-logo">
-                  <img src="majestic/images/logo.svg" alt="logo" />
-                </div>
-                <h4>新用户?</h4>
-                <h6 class="font-weight-light">仅需简单几步即可成功注册</h6>
-                <form class="pt-3" id="registerForm">
-                  <div class="form-group">
-                    <input
-                      type="text"
-                      class="form-control form-control-lg"
-                      id="exampleInputUsername1"
-                      placeholder="用户名"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <input
-                      type="email"
-                      class="form-control form-control-lg"
-                      id="exampleInputEmail1"
-                      placeholder="邮箱"
-                    />
-                    <button
-                      id="emailCaptchaBtn"
-                      style="margin-top: 5%"
-                      class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
-                    >
-                      获取验证码
-                    </button>
-                  </div>
-                  <div class="form-group">
-                    <input
-                      type="text"
-                      class="form-control form-control-lg"
-                      id="emailCaptchaCode"
-                      placeholder="验证码"
-                    />
-                  </div>
-                  <div class="form-group">
-                    <input
-                      type="password"
-                      class="form-control form-control-lg"
-                      id="exampleInputPassword1"
-                      placeholder="密码"
-                    />
-                  </div>
-                  <div class="mb-4">
-                    <div class="form-check">
-                      <div>
-                        <label class="form-check-label text-muted">
-                          <input
-                            type="checkbox"
-                            class="form-check-input"
-                          />我同意《新用户注册协议》</label
-                        ><a href="/policy">点击查看</a>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="mt-3">
-                    <button
-                      type="submit"
-                      class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
-                    >
-                      注册
-                    </button>
-                  </div>
-                  <div class="text-center mt-4 font-weight-light">
-                    已有帐户? <a href="login" class="text-primary">登录</a>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
+    <link rel="stylesheet" href="/css/layui.css" />
+    <link rel="shortcut icon" href="/images/favicon.png" />
+    <style>
+        .layui-nav {
+            width: 100%;
+            background-color: #2c3e50;
+        }
+        .layui-nav .layui-nav-item a {
+            color: #fff;
+        }
+        .user-profile {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 14px;
+            margin-right: 5px;
+        }
+        .register-container {
+            width: 320px;
+            margin: 20px auto 0;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .brand-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .brand-logo img {
+            height: 50px;
+        }
+        .register-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .register-subtitle {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .layui-footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-top: 1px solid #e6e6e6;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .layui-layout {
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <script src="/js/jquery-3.6.1.min.js"></script>
+    <script src="/layui.js"></script>
+</head>
+<body>
+    <div class="layui-layout">
+        <div class="layui-header">
+            <ul class="layui-nav" lay-filter="main-nav">
+                <li class="layui-nav-item layui-this">
+                    <a href="/"><img src="/images/logo.png" alt="Logo" style="height: 30px;" /></a>
+                </li>
+                <li class="layui-nav-item"><a href="/">图库</a></li>
+                <li class="layui-nav-item">
+                    <a href="/home" id="toHomeHref">
+                        <span class="user-profile" id="userProfile"></span>
+                        <span>用户中心</span>
+                    </a>
+                </li>
+                <li class="layui-nav-item"><a href="javascript:logout();">退出</a></li>
+            </ul>
         </div>
-        <!-- content-wrapper ends -->
-      </div>
-      <!-- page-body-wrapper ends -->
+        <div class="">
+            <div class="register-container">
+                <div class="brand-logo">
+                    <img src="/images/logo.png" alt="logo" />
+                </div>
+                <h4 class="register-title">新用户?</h4>
+                <h6 class="register-subtitle">仅需简单几步即可成功注册</h6>
+                <form class="layui-form" action="#">
+                    <div class="layui-form-item">
+                        <div class="layui-input-wrap">
+                            <div class="layui-input-prefix">
+                                <i class="layui-icon layui-icon-username"></i>
+                            </div>
+                            <input type="text" name="username" id="exampleInputUsername1" lay-verify="required" placeholder="用户名" lay-reqtext="请填写用户名" autocomplete="off" class="layui-input" lay-affix="clear" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-row">
+                            <div class="layui-col-xs7">
+                                <div class="layui-input-wrap">
+                                    <div class="layui-input-prefix">
+                                        <i class="layui-icon layui-icon-email"></i>
+                                    </div>
+                                    <input type="email" name="email" id="exampleInputEmail1" lay-verify="required|email" placeholder="邮箱" lay-reqtext="请填写邮箱" autocomplete="off" class="layui-input" lay-affix="clear" />
+                                </div>
+                            </div>
+                            <div class="layui-col-xs5">
+                                <div style="margin-left: 11px;">
+                                    <button type="button" class="layui-btn layui-btn-fluid layui-btn-primary" lay-on="reg-get-vercode">获取验证码</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-wrap">
+                            <div class="layui-input-prefix">
+                                <i class="layui-icon layui-icon-vercode"></i>
+                            </div>
+                            <input type="text" name="captchaCode" id="emailCaptchaCode" lay-verify="required" placeholder="验证码" lay-reqtext="请填写验证码" autocomplete="off" class="layui-input" lay-affix="clear" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-wrap">
+                            <div class="layui-input-prefix">
+                                <i class="layui-icon layui-icon-password"></i>
+                            </div>
+                            <input type="password" name="password" id="exampleInputPassword1" lay-verify="required|password" placeholder="密码" lay-reqtext="请填写密码" autocomplete="off" class="layui-input" lay-affix="eye" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <input type="checkbox" name="agreement" lay-verify="required" lay-skin="primary" title="同意" />
+                        <a href="/policy" target="_blank" style="position: relative; top: 6px; left: -15px;" class="layui-link">
+                            <ins>新用户注册协议</ins>
+                        </a>
+                    </div>
+                    <div class="layui-form-item">
+                        <button class="layui-btn layui-btn-fluid layui-btn-primary" lay-submit lay-filter="register">注册</button>
+                    </div>
+                    <div class="layui-form-item">
+                        <span>已有帐户? </span><a href="/login" class="layui-link">登录</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="layui-footer">
+            <p>© 2025 <a href="/" class="layui-link">全景VR</a> by clarkhg. All rights reserved.</p>
+        </div>
     </div>
-    <!-- container-scroller -->
-    <!-- plugins:js -->
-    <script src="majestic/vendors/base/vendor.bundle.base.js"></script>
-    <!-- endinject -->
-    <!-- inject:js -->
-    <script src="majestic/js/off-canvas.js"></script>
-    <script src="majestic/js/hoverable-collapse.js"></script>
-    <script src="majestic/js/template.js"></script>
-    <!-- endinject -->
-    <!-- Custom js for this page-->
     <script>
-      $(document).ready(function () {
-        // 获取验证码
-        $("#emailCaptchaBtn").click(function (event) {
-          event.preventDefault();
-          var email = $("#exampleInputEmail1").val();
-          $.ajax({
-            type: "POST",
-            url: "/service/emailCode",
-            data: { email: email },
-            success: function (response) {
-              Swal.fire({
-                title: "验证码已发送",
-                text: response.message,
-                icon: "success",
-                confirmButtonText: "OK",
-              });
-            },
-            error: function (xhr, status, error) {
-              Swal.fire({
-                title: "发送验证码失败!",
-                text: "发生错误: " + error,
-                icon: "error",
-                confirmButtonText: "OK",
-              });
-            },
-          });
-        });
+        layui.use(['form', 'element', 'layer', 'util'], function () {
+            var form = layui.form;
+            var element = layui.element;
+            var layer = layui.layer;
+            var util = layui.util;
 
-        // 注册用户
-        $("#registerForm").submit(function (event) {
-          event.preventDefault();
-          var username = $("#exampleInputUsername1").val();
-          var email = $("#exampleInputEmail1").val();
-          var captchaCode = $("#emailCaptchaCode").val();
-          var password = $("#exampleInputPassword1").val();
-          $.ajax({
-            type: "POST",
-            url: "/service/register",
-            data: {
-              username: username,
-              email: email,
-              captchaCode: captchaCode,
-              password: password,
-            },
-            success: function (response) {
-              var status = response;
-              console.log(status);
-              if (status == 1) {
-                Swal.fire({
-                  title: "注册成功!",
-                  icon: "success",
-                  confirmButtonText: "OK",
-                }).then(function () {
-                  window.location.href = "/login";
+            $(document).ready(function () {
+                var token = sessionStorage.getItem("token");
+                if (token) {
+                    $("#toHomeHref").attr("href", "/home?token=" + token);
+                    // 假设用户名从后端获取，这里用示例值
+                    var username = "user"; // 替换为实际用户名
+                    var color = stringToColor(username);
+                    $("#userProfile").css("background-color", color).text(username.charAt(0).toUpperCase());
+                    layer.msg('您已登录，即将跳转到用户主页...', { icon: 6, time: 2000 }, function () {
+                        window.location.replace("/home?token=" + token);
+                    });
+                }
+            });
+
+            // 根据用户名生成颜色
+            function stringToColor(str) {
+                let hash = 0;
+                for (let i = 0; i < str.length; i++) {
+                    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+                }
+                let color = '#';
+                for (let i = 0; i < 3; i++) {
+                    let value = (hash >> (i * 8)) & 0xFF;
+                    color += ('00' + value.toString(16)).substr(-2);
+                }
+                return color;
+            }
+
+            window.logout = function () {
+                sessionStorage.clear();
+                window.location.replace("/");
+            };
+
+            form.verify({
+                password: [
+                    /^[\S]{6,}$/,
+                    '密码必须6位以上，且不能包含空格'
+                ]
+            });
+
+            util.on('lay-on', {
+                'reg-get-vercode': function (othis) {
+                    var isvalid = form.validate('#exampleInputEmail1');
+                    if (isvalid) {
+                        var email = $("#exampleInputEmail1").val();
+                        var loadingIndex = layer.load(2, { shade: [0.3, '#000'] });
+                        $.ajax({
+                            type: "POST",
+                            url: "/service/emailCode",
+                            data: { email: email },
+                            success: function (response) {
+                                layer.close(loadingIndex);
+                                layer.msg('验证码已发送到您的邮箱', { icon: 1, time: 2000 });
+                            },
+                            error: function (xhr, status, error) {
+                                layer.close(loadingIndex);
+                                layer.msg('发送验证码失败：' + error, { icon: 2, time: 2000 });
+                            }
+                        });
+                    }
+                }
+            });
+
+            form.on('submit(register)', function (data) {
+                var field = data.field;
+                var username = field.username;
+                var email = field.email;
+                var captchaCode = field.captchaCode;
+                var password = field.password;
+
+                if (!field.agreement) {
+                    layer.msg('您必须同意用户协议才能注册', { icon: 2, time: 2000 });
+                    return false;
+                }
+
+                var loadingIndex = layer.load(2, { shade: [0.3, '#000'] });
+                $.ajax({
+                    type: "POST",
+                    url: "/service/register",
+                    data: {
+                        username: username,
+                        email: email,
+                        captchaCode: captchaCode,
+                        password: password
+                    },
+                    success: function (response) {
+                        layer.close(loadingIndex);
+                        var status = response.status || response;
+                        if (status == 1) {
+                            layer.msg('注册成功！', { icon: 1, time: 2000 }, function () {
+                                window.location.href = "/login";
+                            });
+                        } else if (status == 2) {
+                            layer.msg('验证码错误！', { icon: 2, time: 2000 });
+                        } else if (status == 0) {
+                            layer.msg('注册失败：' + (response.message || '请检查输入'), { icon: 2, time: 2000 });
+                        } else {
+                            layer.msg('未知错误：' + (response.message || '请稍后重试'), { icon: 2, time: 2000 });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        layer.close(loadingIndex);
+                        layer.msg('注册失败：' + error, { icon: 2, time: 2000 });
+                    }
                 });
-              } else if (status == 2) {
-                Swal.fire({
-                  title: "验证码错误!",
-                  text: response.message,
-                  icon: "error",
-                  confirmButtonText: "OK",
-                })
-              } else if (status == 0) {
-                Swal.fire({
-                  title: "其他错误!",
-                  text: response.message,
-                  icon: "error",
-                  confirmButtonText: "OK",
-                })
-              } else {
-                Swal.fire({
-                  title: "未知错误!",
-                  text: response.message,
-                  icon: "error",
-                  confirmButtonText: "OK",
-                })
-              }
-            },
-            error: function (xhr, status, error) {
-              Swal.fire({
-                title: "注册失败!",
-                text: "发生错误: " + error,
-                icon: "error",
-                confirmButtonText: "OK",
-              });
-            },
-          });
+                return false;
+            });
         });
-      });
     </script>
-    <!-- End custom js for this page-->
-  </body>
+</body>
 </html>

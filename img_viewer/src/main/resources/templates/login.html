@@ -1,169 +1,239 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <!-- Required meta tags -->
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>用户登录</title>
-  <!-- plugins:css -->
-  <link rel="stylesheet" href="majestic/vendors/mdi/css/materialdesignicons.min.css">
-  <link rel="stylesheet" href="majestic/vendors/base/vendor.bundle.base.css">
-  <!-- endinject -->
-  <!-- plugin css for this page -->
-  <!-- End plugin css for this page -->
-  <!-- inject:css -->
-  <link rel="stylesheet" href="majestic/css/style.css">
-  <link rel="stylesheet" href="css/bootstrap.min.css">
-  <!-- endinject -->
-  <link rel="shortcut icon" href="majestic/images/favicon.png" />
-  <script src="js/bootstrap.bundle.min.js"></script>
-  <script src="js/jquery-3.6.1.min.js"></script>
-  <script src="js/sweetalert2@11.js"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>用户登录</title>
+    <link rel="stylesheet" href="/css/layui.css" />
+    <link rel="shortcut icon" href="/images/favicon.png" />
+    <style>
+        .layui-nav {
+            width: 100%;
+            background-color: #2c3e50;
+        }
+        .layui-nav .layui-nav-item a {
+            color: #fff;
+        }
+        .user-profile {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 14px;
+            margin-right: 5px;
+        }
+        .login-container {
+            width: 320px;
+            margin: 20px auto 0;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .brand-logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .brand-logo img {
+            height: 50px;
+        }
+        .login-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .login-subtitle {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .layui-footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-top: 1px solid #e6e6e6;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .layui-layout {
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <script src="/js/jquery-3.6.1.min.js"></script>
+    <script src="/layui.js"></script>
 </head>
-
 <body>
-  <div class="container-scroller">
-    <div class="container-fluid page-body-wrapper full-page-wrapper">
-      <div class="content-wrapper d-flex align-items-center auth px-0">
-        <div class="row w-100 mx-0">
-          <div class="col-lg-4 mx-auto">
-            <div class="auth-form-light text-left py-5 px-4 px-sm-5">
-              <div class="brand-logo">
-                <img src="majestic/images/logo.svg" alt="logo">
-              </div>
-              <h4>你好！</h4>
-              <h6 class="font-weight-light">登录以继续访问</h6>
-              <!-- <form class="pt-3"> -->
-              <div class="form-group">
-                <input type="email" class="form-control form-control-lg" id="usernameInput" placeholder="用户名">
-              </div>
-              <div class="form-group">
-                <input type="password" class="form-control form-control-lg" id="passwordInput" placeholder="密码">
-              </div>
-              <div class="mt-3">
-                <button class="btn btn-block btn-primary btn-lg font-weight-medium auth-form-btn"
-                  id="loginBtn">登录</button>
-                <div id="loginMsg"></div>
-              </div>
-              <div class="my-2 d-flex justify-content-between align-items-center">
-                <div class="form-check">
-                  <label class="form-check-label text-muted">
-                    <input type="checkbox" class="form-check-input" id="stayLoginInput" value="stayLogin" checked>
-                    保持登录状态
-                  </label>
-                </div>
-                <a href="#" class="auth-link text-black">忘记密码?</a>
-              </div>
-              <!-- <div class="mb-2">
-                  <button type="button" class="btn btn-block btn-facebook auth-form-btn">
-                    <i class="mdi mdi-facebook me-2"></i>Connect using facebook
-                  </button>
-                </div> -->
-              <div class="text-center mt-4 font-weight-light">
-                没有帐户? <a href="register" class="text-primary">注册</a>
-              </div>
-              <!-- </form> -->
-            </div>
-          </div>
+    <div class="layui-layout">
+        <div class="layui-header">
+            <ul class="layui-nav" lay-filter="main-nav">
+                <li class="layui-nav-item layui-this">
+                    <a href="/"><img src="/images/logo.png" alt="Logo" style="height: 30px;" /></a>
+                </li>
+                <li class="layui-nav-item"><a href="/">图库</a></li>
+                <li class="layui-nav-item">
+                    <a href="/home" id="toHomeHref">
+                        <span class="user-profile" id="userProfile"></span>
+                        <span>用户中心</span>
+                    </a>
+                </li>
+                <li class="layui-nav-item"><a href="javascript:logout();">退出</a></li>
+            </ul>
         </div>
-      </div>
-      <!-- content-wrapper ends -->
+        <div class="">
+            <div class="login-container">
+                <div class="brand-logo">
+                    <img src="/images/logo.png" alt="logo" />
+                </div>
+                <h4 class="login-title">你好！</h4>
+                <h6 class="login-subtitle">登录以继续访问</h6>
+                <form class="layui-form" action="#">
+                    <div class="layui-form-item">
+                        <div class="layui-input-wrap">
+                            <div class="layui-input-prefix">
+                                <i class="layui-icon layui-icon-username"></i>
+                            </div>
+                            <input type="text" name="username" id="usernameInput" lay-verify="required" placeholder="用户名" lay-reqtext="请填写用户名" autocomplete="off" class="layui-input" lay-affix="clear" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-wrap">
+                            <div class="layui-input-prefix">
+                                <i class="layui-icon layui-icon-password"></i>
+                            </div>
+                            <input type="password" name="password" id="passwordInput" lay-verify="required" placeholder="密码" lay-reqtext="请填写密码" autocomplete="off" class="layui-input" lay-affix="eye" />
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-row">
+                            <div class="layui-col-xs7">
+                                <div class="layui-input-wrap">
+                                    <div class="layui-input-prefix">
+                                        <i class="layui-icon layui-icon-vercode"></i>
+                                    </div>
+                                    <input type="text" name="captcha" id="captchaInput" lay-verify="required" placeholder="验证码" lay-reqtext="请填写验证码" autocomplete="off" class="layui-input" lay-affix="clear" />
+                                </div>
+                            </div>
+                            <div class="layui-col-xs5">
+                                <div style="margin-left: 10px;">
+                                    <img src="https://www.oschina.net/action/user/captcha" id="captchaImg" onclick="this.src='https://www.oschina.net/action/user/captcha?t='+ new Date().getTime();" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <input type="checkbox" name="stayLogin" id="stayLoginInput" lay-skin="primary" title="保持登录状态" checked />
+                        <a href="#" style="float: right; margin-top: 7px;" class="layui-link">忘记密码？</a>
+                    </div>
+                    <div class="layui-form-item">
+                        <button class="layui-btn layui-btn-fluid layui-btn-primary" lay-submit lay-filter="login">登录</button>
+                    </div>
+                    <div class="layui-form-item">
+                        <span>没有帐户? </span><a href="/register" class="layui-link">注册</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="layui-footer">
+            <p>© 2025 <a href="/" class="layui-link">全景VR</a> by clarkhg. All rights reserved.</p>
+        </div>
     </div>
-    <!-- page-body-wrapper ends -->
-  </div>
-  <!-- container-scroller -->
-  <!-- plugins:js -->
-  <script src="majestic/vendors/base/vendor.bundle.base.js"></script>
-  <!-- endinject -->
-  <!-- inject:js -->
-  <script src="majestic/js/off-canvas.js"></script>
-  <script src="majestic/js/hoverable-collapse.js"></script>
-  <script src="majestic/js/template.js"></script>
-  <!-- endinject -->
+    <script>
+        layui.use(['form', 'element', 'layer'], function () {
+            var form = layui.form;
+            var element = layui.element;
+            var layer = layui.layer;
 
-  <script>
-    function checkToken() {
-      var token = sessionStorage.getItem("token");
-      console.log(token);
-      if (token == undefined) {
-          return;
-      }
-      else {
-        var uploadingAlert = Swal.fire({
-					title: '您已登录，即将跳转到用户主页......',
-					text: '您已登录，即将跳转到用户主页......',
-					icon: 'info',
-					showConfirmButton: false,
-					allowOutsideClick: false,
-					allowEscapeKey: false,
-					allowEnterKey: false
-				});
-        setTimeout(function() {
-          uploadingAlert.close(); // 关闭提示框
-          window.location.replace("/home?token=" + token);
-      }, 1500); // 1.5秒后执行跳转
-      }
-  }
+            $(document).ready(function () {
+                var token = sessionStorage.getItem("token");
+                if (token) {
+                    $("#toHomeHref").attr("href", "/home?token=" + token);
+                    // 假设用户名从后端获取，这里用示例值
+                    var username = "user"; // 替换为实际用户名
+                    var color = stringToColor(username);
+                    $("#userProfile").css("background-color", color).text(username.charAt(0).toUpperCase());
+                    layer.msg('您已登录，即将跳转到用户主页...', { icon: 6, time: 1500 }, function () {
+                        window.location.replace("/home?token=" + token);
+                    });
+                }
+            });
 
-    $(document).ready(function () {
-      checkToken()
-
-      $("#loginBtn").click(function () {
-        //$(this).hide();
-        var username = $("#usernameInput").val()
-        var password = $("#passwordInput").val()
-        var stayLogin = $("#stayLoginInput:checked").prop("checked")
-        if(stayLogin){
-          stayLogin=1
-        }
-        else{
-          stayLogin=0
-        }
-        
-        
-        //console.log(username)
-        //console.log(password)
-        //console.log(stayLogin)
-
-        if(username.length===0){
-          $("#loginMsg").html("<p style='color:red; margin-top:2%;'>用户名不能为空！</p>");
-          return;
-        }
-        if(password.length===0){
-          $("#loginMsg").html("<p style='color:red; margin-top:2%;'>密码不能为空！</p>");
-          return;
-        }
-
-        $.ajax({
-          url: "/service/login", 
-          type: 'POST',
-          data:{
-            'username' : username,
-            'password' : password,
-            'stayLogin': stayLogin
-          },
-          beforeSend: function(){
-
-          },
-          success: function (data) {
-            //console.log(data)
-            if(data['status']==200){
-              $("#loginMsg").html("<p style='margin-top:2%;'>登录成功！</p>");
-              var token = data["token"];
-              sessionStorage.setItem("token", token);
-              window.location.replace("/home?token="+token);
-            }
-            else{
-              $("#loginMsg").html("<p style='color:red; margin-top:2%;'>用户名或密码错误！</p>");
+            // 根据用户名生成颜色
+            function stringToColor(str) {
+                let hash = 0;
+                for (let i = 0; i < str.length; i++) {
+                    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+                }
+                let color = '#';
+                for (let i = 0; i < 3; i++) {
+                    let value = (hash >> (i * 8)) & 0xFF;
+                    color += ('00' + value.toString(16)).substr(-2);
+                }
+                return color;
             }
 
-          }
+            window.logout = function () {
+                sessionStorage.clear();
+                window.location.replace("/");
+            };
+
+            form.on('submit(login)', function (data) {
+                var field = data.field;
+                var username = field.username;
+                var password = field.password;
+                var stayLogin = field.stayLogin ? 1 : 0;
+
+                if (!username) {
+                    layer.msg('用户名不能为空！', { icon: 2, time: 2000 });
+                    return false;
+                }
+                if (!password) {
+                    layer.msg('密码不能为空！', { icon: 2, time: 2000 });
+                    return false;
+                }
+                if (!field.captcha) {
+                    layer.msg('验证码不能为空！', { icon: 2, time: 2000 });
+                    return false;
+                }
+
+                $.ajax({
+                    url: "/service/login",
+                    type: 'POST',
+                    data: {
+                        username: username,
+                        password: password,
+                        stayLogin: stayLogin,
+                        captcha: field.captcha
+                    },
+                    success: function (data) {
+                        if (data.status == 200) {
+                            layer.msg('登录成功！', { icon: 1, time: 2000 }, function () {
+                                var token = data.token;
+                                sessionStorage.setItem("token", token);
+                                window.location.replace("/home?token=" + token);
+                            });
+                        } else {
+                            layer.msg('用户名、密码或验证码错误！', { icon: 2, time: 2000 });
+                            // 刷新验证码
+                            $("#captchaImg").attr("src", "https://www.oschina.net/action/user/captcha?t=" + new Date().getTime());
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        layer.msg('登录失败，请稍后重试！', { icon: 2, time: 2000 });
+                        // 刷新验证码
+                        $("#captchaImg").attr("src", "https://www.oschina.net/action/user/captcha?t=" + new Date().getTime());
+                    }
+                });
+                return false;
+            });
         });
-
-      });
-    });
-  </script>
+    </script>
 </body>
-
 </html>

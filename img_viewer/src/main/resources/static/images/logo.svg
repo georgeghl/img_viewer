@@ -1,0 +1,14 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- 绿色圆形背景 -->
+  <circle cx="100" cy="100" r="95" fill="#4CAF50" />
+  <!-- 白色圆形 -->
+  <circle cx="100" cy="100" r="50" fill="white" />
+  <!-- 蓝色圆形 -->
+  <circle cx="100" cy="100" r="30" fill="#2196F3" />
+  <!-- 白色小圆 -->
+  <circle cx="100" cy="100" r="15" fill="white" />
+  <!-- 顶部黑色矩形 -->
+  <rect x="60" y="40" width="80" height="20" rx="10" ry="10" fill="black" />
+  <!-- 右上角白色小圆 -->
+  <circle cx="160" cy="40" r="10" fill="white" />
+</svg>

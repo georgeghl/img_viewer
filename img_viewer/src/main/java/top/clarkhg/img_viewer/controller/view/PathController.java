@@ -1,4 +1,4 @@
-package top.clarkhg.img_viewer.controller;
+package top.clarkhg.img_viewer.controller.view;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

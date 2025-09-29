@@ -1,454 +1,232 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>全景VR</title>
-    <link rel="stylesheet" href="pintereso/assets/css/app.css" />
-    <link rel="stylesheet" href="pintereso/assets/css/theme.css" />
-    <link rel="stylesheet" href="pintereso/assets/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/css/layui.css" />
+    <link rel="shortcut icon" href="/images/favicon.png" />
     <style>
-      .card-img {
-        width: 270px; /* 设置图片框的固定宽度 */
-        height: 150px; /* 设置图片框的固定高度 */
-        object-fit: cover; /* 确保图片覆盖整个框，同时保持图片的宽高比 */
-      }
-      /* 新增样式，用于页数显示的容器 */
-      #pageCountMax {
-        margin-left: 7px; /* 适当调整间距 */
-        font-size: 20px; /* 设置合适的字体大小 */
-        color: #888; /* 设置合适的字体颜色 */
-        margin-right: 7px;
-        align-self: center;
-      }
-      
+        .layui-nav {
+            width: 100%;
+            background-color: #2c3e50;
+        }
+        .layui-nav .layui-nav-item a {
+            color: #fff;
+        }
+        .user-profile {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            line-height: 32px;
+            text-align: center;
+            border-radius: 50%;
+            color: #fff;
+            font-size: 14px;
+            margin-right: 5px;
+        }
+        .card-img {
+            width: 240px;
+            height: 133px;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto;
+        }
+        .layui-card {
+            margin: 10px auto;
+            width: 240px;
+            text-align: center;
+        }
+        .layui-card-header {
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .layui-footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-top: 1px solid #e6e6e6;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+        .layui-row {
+            justify-content: center;
+        }
+        .layui-col-md2 {
+            width: 20%; /* 强制5列布局 */
+        }
+        .layui-container {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .layui-layout {
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
     </style>
-    <script src="js/jquery-3.6.1.min.js"></script>
-    <script src="js/sweetalert2@11.js"></script>
-    <script>
-      $(document).ready(function () {
-        var token = sessionStorage.getItem("token");
-        if (token != undefined) {
-          var newHref = "/home?token=" + token;
-          $("#toHomeHref").attr("href", newHref);
-        }
-
-        fetchImages(1);
-      });
-
-      function fetchImages(page) {
-        var token = sessionStorage.getItem("token");
-        $.ajax({
-          type: "POST",
-          url: "/service/getPublicImageCount",
-          data: {},
-          success: function (response) {
-            res = JSON.parse(response);
-            if (res["code"] == 200) {
-              imageCnt = res["data"];
-              console.log(imageCnt);
-              console.log("Total image count: ", imageCnt);
-              totalPages = parseInt(imageCnt / 25) + 1;
-              console.log("Total page count: ", totalPages);
-              $.ajax({
-                type: "POST",
-                url: "/service/getPublicImageByPage",
-                data: {
-                  page: page,
-                },
-                success: function (response) {
-                  // 更新图像显示
-                  res = JSON.parse(response);
-                  if (res["code"] == 200) {
-                    updateImageCards(res["data"]);
-                    console.log(totalPages);
-                    updatePagination(page, totalPages);
-                    $("#pageCountMax").text("/" + totalPages+""); // 更新最大页数显示
-                  } else {
-                    var uploadingAlert = Swal.fire({
-                      title: "错误！" + res["code"] + ", " + res["msg"],
-                      text: "错误！" + res["code"] + ", " + res["msg"],
-                      icon: "error",
-                      showConfirmButton: false,
-                      allowOutsideClick: false,
-                      allowEscapeKey: false,
-                      allowEnterKey: false,
-                    });
-                    setTimeout(function () {
-                      uploadingAlert.close(); // 关闭提示框
-                    }, 5000);
-                  }
-                },
-                error: function (xhr, status, error) {
-                  // 处理错误
-                },
-              });
-            } else {
-              var uploadingAlert = Swal.fire({
-                title: "错误！" + res["code"] + ", " + res["msg"],
-                text: "错误！" + res["code"] + ", " + res["msg"],
-                icon: "error",
-                showConfirmButton: false,
-                allowOutsideClick: false,
-                allowEscapeKey: false,
-                allowEnterKey: false,
-              });
-              setTimeout(function () {
-                uploadingAlert.close(); // 关闭提示框
-              }, 5000);
-            }
-          },
-        });
-      }
-
-      function updateImageCards(images) {
-        var imageCardColumnsDiv = $("#imageCardColumnsDiv");
-        imageCardColumnsDiv.empty(); // 清空原有内容
-        console.log(images);
-
-        images.forEach(function (image) {
-          if (image.typeId == 1) {
-            var cardHtml = `
-                    <div class="card card-pin">
-                        <img class="card-img" src="uploadfile/image_pano/${image.imageId}/thumb.jpg" alt="Card image" onerror="this.onerror=null;this.src='images/image_error.jpg';this.style.width='200px';this.style.height='150px';">
-                        <a href="map_pano?v=${image.imageId}"><div class="overlay">
-                            
-                                <h2 class="card-title title">${image.imageName}</h2>
-                            
-
-                        </div></a>
-                    </div>`;
-            imageCardColumnsDiv.append(cardHtml);
-          } else if (image.typeId == 2) {
-			var cardHtml = `
-                    <div class="card card-pin">
-                        <img class="card-img" src="uploadfile/image_normal/${image.imageId}/thumb.jpg" alt="Card image" onerror="this.onerror=null;this.src='images/image_error.jpg';this.style.width='200px';this.style.height='150px';">
-                        <a href="image?v=${image.imageId}"><div class="overlay">
-                            
-                                <h2 class="card-title title">${image.imageName}</h2>
-                            
-
-                        </div></a>
-                    </div>`;
-            imageCardColumnsDiv.append(cardHtml);
-          }
-		  else{
-			var cardHtml = `
-                    <div class="card card-pin">
-                        <img class="card-img" src="uploadfile/image_normal/${image.imageId}/thumb.jpg" alt="Card image" onerror="this.onerror=null;this.src='images/image_error.jpg';this.style.width='200px';this.style.height='150px';">
-                        <a href="image?v=${image.imageId}"><div class="overlay">
-                            
-                                <h2 class="card-title title">${image.imageName}</h2>
-                            
-
-                        </div></a>
-                    </div>`;
-            imageCardColumnsDiv.append(cardHtml);
-		  }
-        });
-      }
-
-      function updatePagination(currentPage, totalPages) {
-        var pagination = $("#pagination");
-        pagination.empty(); // 清空原有内容
-
-        // 上一页按钮
-        var prevButton = `
-        <li class="page-item ${currentPage === 1 ? "disabled" : ""}">
-            <a class="page-link" href="#" onclick="fetchImages(${
-              currentPage - 1
-            })" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>`;
-        pagination.append(prevButton);
-
-        // 生成页码按钮
-        var startPage = Math.max(currentPage - 5, 1);
-        for (var i = startPage; i <= totalPages && i <= currentPage + 5; i++) {
-          var pageButton = `
-            <li class="page-item ${i === currentPage ? "active" : ""}">
-                <a class="page-link" href="#" onclick="fetchImages(${i})">${i}</a>
-            </li>`;
-          pagination.append(pageButton);
-        }
-
-        // 下一页按钮
-        var nextButton = `
-        <li class="page-item ${currentPage === totalPages ? "disabled" : ""}">
-            <a class="page-link" href="#" onclick="fetchImages(${
-              currentPage + 1
-            })" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>`;
-        pagination.append(nextButton);
-      }
-
-
-
-
-
-
-
-
-      function jumpToPage() {
-        var pageInput = document.getElementById('pageInput');
-        var page = parseInt(pageInput.value, 10); // 将输入的页码转换为整数
-    
-        // 检查页码是否在有效范围内
-        if (!isNaN(page) && page >= 1 && page <= totalPages) {
-          fetchImages(page); // 调用已有的 fetchImages 函数来获取并显示指定页的图片
-          pageInput.value = ''; // 清空输入框
-        } else {
-          // 如果页码无效，提示用户
-          Swal.fire({
-            title: '无效的页码',
-            text: '请输入一个有效的页码（1-' + totalPages + '）',
-            icon: 'warning',
-            confirmButtonText: '确定'
-          });
-        }
-      }
-    
-      // 确保在文档加载完成后初始化分页和输入框
-      document.addEventListener('DOMContentLoaded', function() {
-        // 初始加载第一页图片
-        fetchImages(1);
-        // 清空输入框，避免页面刷新后保留之前输入的值
-        document.getElementById('pageInput').value = '';
-      });
-    </script>
-  </head>
-
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
-      <a class="navbar-brand font-weight-bolder mr-3" href="/"
-        ><img src="pintereso/assets/img/logo.png"
-      /></a>
-      <button
-        class="navbar-light navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarsDefault"
-        aria-controls="navbarsDefault"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarsDefault">
-        <ul class="navbar-nav mr-auto align-items-center">
-          <form class="bd-search hidden-sm-down">
-            <input
-              type="text"
-              class="form-control bg-graylight border-0 font-weight-bold"
-              id="search-input"
-              placeholder="搜索..."
-              autocomplete="off"
-            />
-            <div
-              class="dropdown-menu bd-search-results"
-              id="search-results"
-            ></div>
-          </form>
-        </ul>
-        <ul class="navbar-nav ml-auto align-items-center">
-          <li class="nav-item">
-            <a class="nav-link active" href="/">首页</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/">图库</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" id="toHomeHref" href="home"
-              ><img
-                class="rounded-circle mr-2"
-                src="pintereso/assets/img/av.png"
-                width="30"
-              /><span class="align-middle">用户中心</span></a
-            >
-          </li>
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link"
-              href="#"
-              id="dropdown02"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              <svg
-                style="margin-top: 10px"
-                class="_3DJPT"
-                version="1.1"
-                viewbox="0 0 32 32"
-                width="21"
-                height="21"
-                aria-hidden="false"
-                data-reactid="71"
-              >
-                <path
-                  d="M7 15.5c0 1.9-1.6 3.5-3.5 3.5s-3.5-1.6-3.5-3.5 1.6-3.5 3.5-3.5 3.5 1.6 3.5 3.5zm21.5-3.5c-1.9 0-3.5 1.6-3.5 3.5s1.6 3.5 3.5 3.5 3.5-1.6 3.5-3.5-1.6-3.5-3.5-3.5zm-12.5 0c-1.9 0-3.5 1.6-3.5 3.5s1.6 3.5 3.5 3.5 3.5-1.6 3.5-3.5-1.6-3.5-3.5-3.5z"
-                  data-reactid="22"
-                ></path>
-              </svg>
-            </a>
-            <div
-              class="dropdown-menu dropdown-menu-right shadow-lg"
-              aria-labelledby="dropdown02"
-            >
-              <h4 class="dropdown-header display-4">
-                访问网站<br />
-                首页
-              </h4>
-              <div class="dropdown-divider"></div>
-              <span class="dropdown-item"
-                ><a href="/" class="btn btn-primary d-block"
-                  ><i class="fa fa-download"></i> 跳转</a
-                ></span
-              >
-            </div>
-          </li>
-        </ul>
-      </div>
-    </nav>
-    <main role="main">
-      <section class="mt-4 mb-5">
-        <div class="container mb-4">
-          <h1 class="font-weight-bold title">探索</h1>
-          <div class="row">
-            <nav
-              class="navbar navbar-expand-lg navbar-light bg-white pl-2 pr-2"
-            >
-              <button
-                class="navbar-light navbar-toggler"
-                type="button"
-                data-toggle="collapse"
-                data-target="#navbarsExplore"
-                aria-controls="navbarsDefault"
-                aria-expanded="false"
-                aria-label="Toggle navigation"
-              >
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="navbarsExplore">
-                <ul class="navbar-nav">
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">自然</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">城市</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">建筑</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">其他</a>
-                  </li>
-                  <li class="nav-item dropdown">
-                    <a
-                      class="nav-link dropdown-toggle"
-                      href="http://example.com"
-                      id="dropdown01"
-                      data-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                      >更多</a
-                    >
-                    <div
-                      class="dropdown-menu shadow-lg"
-                      aria-labelledby="dropdown01"
-                    >
-                      <a class="dropdown-item" href="#">太空</a>
-                      <a class="dropdown-item" href="#">室内</a>
-                      <a class="dropdown-item" href="#">行业应用</a>
-                    </div>
-                  </li>
+    <script src="/js/jquery-3.6.1.min.js"></script>
+    <script src="/layui.js"></script>
+</head>
+<body>
+    <div class="layui-layout">
+        <div class="layui-header">
+            <ul class="layui-nav" lay-filter="main-nav">
+                <li class="layui-nav-item">
+                    <a href="/"><img src="/images/logo.png" alt="Logo" style="height: 30px;" /></a>
+                </li>
+                <li class="layui-nav-item layui-this"><a href="/">首页</a></li>
+                <li class="layui-nav-item"><a href="/">图库</a></li>
+                <li class="layui-nav-item">
+                    <a href="/home" id="toHomeHref">
+                        <span class="user-profile" id="userProfile"></span>
+                        <span>用户中心</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="">
+            <div class="layui-container" style="margin-top: 20px;">
+                <h1 class="layui-title" style="font-weight: bold;">探索</h1>
+                <ul class="layui-nav layui-bg-gray" lay-filter="explore-nav">
+                    <li class="layui-nav-item"><a href="#">自然</a></li>
+                    <li class="layui-nav-item"><a href="#">城市</a></li>
+                    <li class="layui-nav-item"><a href="#">建筑</a></li>
+                    <li class="layui-nav-item"><a href="#">其他</a></li>
+                    <li class="layui-nav-item">
+                        <a href="javascript:;">更多</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="#">太空</a></dd>
+                            <dd><a href="#">室内</a></dd>
+                            <dd><a href="#">行业应用</a></dd>
+                        </dl>
+                    </li>
                 </ul>
-              </div>
-            </nav>
-          </div>
-        </div>
-        <div class="container-fluid">
-          <div class="row">
-            <div class="card-columns" id="imageCardColumnsDiv">
-              <!-- 图片卡片将在此动态生成 -->
+                <div class="layui-row layui-col-space10" id="imageCardColumnsDiv" style="margin-top: 20px;">
+                    <!-- 图片卡片将在此动态生成 -->
+                </div>
+                <div class="pagination-container">
+                    <div id="pagination"></div>
+                </div>
             </div>
-          </div>
-
-
-          <nav aria-label="Page navigation example">
-            <div class="row justify-content-center">
-              <!-- 分页按钮 -->
-              <ul class="pagination col-auto justify-content-center" id="pagination">
-                <!-- 分页按钮将在此动态生成 -->
-              </ul>
-            </div>
-            <!-- 新增的跳转指定页功能 -->
-            <div class="row justify-content-center mt-3">
-              <div class="col-auto d-flex align-items-center justify-content-center">
-                <input type="number" id="pageInput" class="form-control mr-1" placeholder="" min="1" style="width: 70px;" required>
-                <p id="pageCountMax" style="margin: 7px; font-size:22px;">/1</p>
-                <button type="button" class="btn btn-primary" onclick="jumpToPage()">跳转</button>
-              </div>
-            </div>
-          </nav>
-          
-            
-          
         </div>
-      </section>
-    </main>
-
-    <script src="pintereso/assets/js/app.js"></script>
-    <script src="pintereso/assets/js/theme.js"></script>
-
-    <footer class="footer pt-5 pb-5 text-center">
-      <div class="container">
-        <div class="socials-media">
-          <ul class="list-unstyled">
-            <li class="d-inline-block ml-1 mr-1">
-              <a href="#" class="text-dark"><i class="fa fa-facebook"></i></a>
-            </li>
-            <li class="d-inline-block ml-1 mr-1">
-              <a href="#" class="text-dark"><i class="fa fa-twitter"></i></a>
-            </li>
-            <li class="d-inline-block ml-1 mr-1">
-              <a href="#" class="text-dark"><i class="fa fa-instagram"></i></a>
-            </li>
-            <li class="d-inline-block ml-1 mr-1">
-              <a href="#" class="text-dark"
-                ><i class="fa fa-google-plus"></i
-              ></a>
-            </li>
-            <li class="d-inline-block ml-1 mr-1">
-              <a href="#" class="text-dark"><i class="fa fa-behance"></i></a>
-            </li>
-            <li class="d-inline-block ml-1 mr-1">
-              <a href="#" class="text-dark"><i class="fa fa-dribbble"></i></a>
-            </li>
-          </ul>
+        <div class="layui-footer">
+            <p>© 2025 <a href="/" class="layui-link">全景VR</a> by clarkhg. All rights reserved.</p>
         </div>
+    </div>
+    <script>
+        layui.use(['element', 'laypage', 'layer'], function () {
+            var element = layui.element;
+            var laypage = layui.laypage;
+            var layer = layui.layer;
 
-        <!--
-              All the links in the footer should remain intact.
-              You may remove the links only if you donate:
-              https://www.wowthemes.net/freebies-license/
-            -->
-        <p>
-          ©
-          <span class="credits font-weight-bold">
-            <a target="_blank" class="text-dark" href="/"
-              ><u>Panorama VR Image Viewer</u> by clarkhg</a
-            >
-          </span>
-        </p>
-      </div>
-    </footer>
-  </body>
+            $(document).ready(function () {
+                var token = sessionStorage.getItem("token");
+                if (token) {
+                    $("#toHomeHref").attr("href", "/home?token=" + token);
+                    // 假设用户名从后端获取，这里用示例值
+                    var username = "user"; // 替换为实际用户名
+                    var color = stringToColor(username);
+                    $("#userProfile").css("background-color", color).text(username.charAt(0).toUpperCase());
+                }
+                fetchImages(1);
+            });
+
+            // 根据用户名生成颜色
+            function stringToColor(str) {
+                let hash = 0;
+                for (let i = 0; i < str.length; i++) {
+                    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+                }
+                let color = '#';
+                for (let i = 0; i < 3; i++) {
+                    let value = (hash >> (i * 8)) & 0xFF;
+                    color += ('00' + value.toString(16)).substr(-2);
+                }
+                return color;
+            }
+
+            function fetchImages(page) {
+                $.ajax({
+                    type: "POST",
+                    url: "/service/getPublicImageCount",
+                    data: {},
+                    success: function (response) {
+                        var res = JSON.parse(response);
+                        if (res["code"] == 200) {
+                            var imageCnt = res["data"];
+                            var totalPages = Math.ceil(imageCnt / 40);
+                            $.ajax({
+                                type: "POST",
+                                url: "/service/getPublicImageByPage",
+                                data: { page: page },
+                                success: function (response) {
+                                    var res = JSON.parse(response);
+                                    if (res["code"] == 200) {
+                                        updateImageCards(res["data"]);
+                                        updatePagination(page, totalPages);
+                                    } else {
+                                        layer.msg("错误！代码: " + res["code"] + ", 消息: " + res["msg"], { icon: 2, time: 5000 });
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error("Error fetching images:", error);
+                                    layer.msg("获取图片失败，请稍后重试", { icon: 2, time: 5000 });
+                                }
+                            });
+                        } else {
+                            layer.msg("错误！代码: " + res["code"] + ", 消息: " + res["msg"], { icon: 2, time: 5000 });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error fetching image count:", error);
+                        layer.msg("获取图片总数失败，请稍后重试", { icon: 2, time: 5000 });
+                    }
+                });
+            }
+
+            function updateImageCards(images) {
+                var imageCardColumnsDiv = $("#imageCardColumnsDiv");
+                imageCardColumnsDiv.empty();
+                images.forEach(function (image) {
+                    var url = image.typeId == 1 ? `map_pano?v=${image.imageId}` : `image?v=${image.imageId}`;
+                    var imgSrc = image.typeId == 1 ? `uploadfile/image_pano/${image.imageId}/thumb.jpg` : `uploadfile/image_normal/${image.imageId}/thumb.jpg`;
+                    var cardHtml = `
+                        <div class="layui-col-md2">
+                            <div class="layui-card">
+                                <div class="layui-card-body">
+                                    <a href="${url}">
+                                        <img class="card-img" src="${imgSrc}" alt="Card image" 
+                                             onerror="this.onerror=null;this.src='/images/image_error.jpg';this.style.width='240px';this.style.height='133px';" />
+                                    </a>
+                                </div>
+                                <div class="layui-card-header">${image.imageName}</div>
+                            </div>
+                        </div>`;
+                    imageCardColumnsDiv.append(cardHtml);
+                });
+            }
+
+            function updatePagination(currentPage, totalPages) {
+                laypage.render({
+                    elem: 'pagination',
+                    count: totalPages * 40,
+                    limit: 40,
+                    curr: currentPage,
+                    jump: function (obj, first) {
+                        if (!first) {
+                            fetchImages(obj.curr);
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
 </html>

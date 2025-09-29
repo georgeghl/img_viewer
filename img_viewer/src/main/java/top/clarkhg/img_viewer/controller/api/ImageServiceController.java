@@ -1,4 +1,4 @@
-package top.clarkhg.img_viewer.controller;
+package top.clarkhg.img_viewer.controller.api;
 
 
 import java.util.HashMap;
