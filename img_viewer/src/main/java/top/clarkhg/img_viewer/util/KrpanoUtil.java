@@ -139,6 +139,52 @@ public class KrpanoUtil {
     }
     
 
+    public static int sphere2cubeVCUBE(String imgPath, String outputPath) {
+        try {
+            logger.debug("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+            logger.debug("sphere2cubeVCUBE is called. Image file path: " + imgPath + "  outputPath: " + outputPath);
+    
+            String KRPANO_HOME = krpanoUtil.myConfigItemMapper.selectConfigValueByName("krpano_home");
+            logger.debug(KRPANO_HOME);
+            String PLATFORM_NAME = krpanoUtil.myConfigItemMapper.selectConfigValueByName("platform_name");
+            logger.debug(PLATFORM_NAME);
+    
+            String command = null;
+            if (PLATFORM_NAME.equals("WIN64")) {
+                command = KRPANO_HOME + "krpanotools64.exe  spheretocube VCUBE " + imgPath + " " + outputPath + " -outsize=150x150";
+            } else if (PLATFORM_NAME.equals("WIN32")) {
+                command = KRPANO_HOME + "krpanotools32.exe  spheretocube VCUBE " + imgPath + " " + outputPath + " -outsize=150x150";
+            }else if (PLATFORM_NAME.equals("LINUX")) {
+                command = KRPANO_HOME + "krpanotools  spheretocube VCUBE " + imgPath + " " + outputPath + " -outsize=150x150";
+            }
+            else {
+                logger.error("Platform illegal!");
+            }
+            logger.debug(command);
+            ProcessBuilder processBuilder = new ProcessBuilder(command.split("\\s+"));
+            Process process = processBuilder.start();
+    
+            // 关闭输出流，防止产生阻塞
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    logger.debug("krpanoUtil@ " + line);
+                }
+            }
+    
+            int exitValue = process.waitFor();
+    
+            logger.debug("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+    
+            return exitValue == 0 ? 1 : 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        } finally {
+            logger.debug("Finally");
+        }
+    }
+
 
     public static int makePreview(String imgPath, String outputPath) {
         try {

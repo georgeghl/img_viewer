@@ -332,6 +332,7 @@ public class ImageService {
 
         // 调用util将sphere转换为cube图
         String previewImagePath = uploadPath + imageUploaded.getImageId() + "/thumb.jpg";
+        String vcubePath = uploadPath + imageUploaded.getImageId() + "/preview.jpg";
         KrpanoUtil.sphere2cube(filePath, fileFolderPath);
         try {
             // 让程序等待5秒钟
@@ -340,7 +341,7 @@ public class ImageService {
             logger.debug("等待被中断了！");
         }
         KrpanoUtil.makePreview(filePath, previewImagePath);
-
+        KrpanoUtil.sphere2cubeVCUBE(filePath, vcubePath);
         try {
             // 让程序等待5秒钟
             Thread.sleep(3000); // 5000毫秒 = 5秒
