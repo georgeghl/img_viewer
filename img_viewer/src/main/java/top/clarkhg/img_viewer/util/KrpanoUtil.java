@@ -151,11 +151,11 @@ public class KrpanoUtil {
     
             String command = null;
             if (PLATFORM_NAME.equals("WIN64")) {
-                command = KRPANO_HOME + "krpanotools64.exe  spheretocube VCUBE " + imgPath + " " + outputPath + " -outsize=150x150";
+                command = KRPANO_HOME + "krpanotools64.exe  sphere2cube VCUBE " + imgPath + " " + outputPath + " -outsize=150x150";
             } else if (PLATFORM_NAME.equals("WIN32")) {
-                command = KRPANO_HOME + "krpanotools32.exe  spheretocube VCUBE " + imgPath + " " + outputPath + " -outsize=150x150";
+                command = KRPANO_HOME + "krpanotools32.exe  sphere2cube VCUBE " + imgPath + " " + outputPath + " -outsize=150x150";
             }else if (PLATFORM_NAME.equals("LINUX")) {
-                command = KRPANO_HOME + "krpanotools  spheretocube VCUBE " + imgPath + " " + outputPath + " -outsize=150x150";
+                command = KRPANO_HOME + "krpanotools  sphere2cube VCUBE " + imgPath + " " + outputPath + " -outsize=150x150";
             }
             else {
                 logger.error("Platform illegal!");

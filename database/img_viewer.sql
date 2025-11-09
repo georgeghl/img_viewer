@@ -65,8 +65,8 @@ CREATE TABLE `config_item`  (
 -- ----------------------------
 -- Records of config_item
 -- ----------------------------
-INSERT INTO `config_item` VALUES ('image_delete_type', 'REAL');
-INSERT INTO `config_item` VALUES ('image_delete_type_desp', '此条目用于配置用户删除图像时是否真实删除数据库记录条目。当配置为`REAL`时，会删除数据库图像记录及本地对应图像文件；当配置为`VIRTUAL`时，仅将图像权限设置为私有，并删除用户与图像的关联记录。');
+INSERT INTO `config_item` VALUES ('image_delete_type', 'TRUE');
+INSERT INTO `config_item` VALUES ('image_delete_type_desp', '此条目用于配置用户删除图像时是否真实删除数据库记录条目。当配置为`TRUE`时，会删除数据库图像记录及本地对应图像文件；当配置为`FALSE`时，仅将图像权限设置为私有，并删除用户与图像的关联记录。');
 INSERT INTO `config_item` VALUES ('jpeg_quality', '100');
 INSERT INTO `config_item` VALUES ('jpeg_quality_desp', '此条目用于配置处理上传图像时，输出图像的质量。若非追求高质量，默认值设置为`85`即可。');
 INSERT INTO `config_item` VALUES ('jpeg_subsamp', '422');

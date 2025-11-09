@@ -68,7 +68,7 @@ public class ImageService {
         logger.debug(image.toString());
         if (image.getOwnerUsername().equals(username)) {
             String IMAGE_DELETE_TYPE = myConfigItemMapper.selectConfigValueByName("image_delete_type");
-            if (IMAGE_DELETE_TYPE.equals("true")) {
+            if (IMAGE_DELETE_TYPE.equals("TRUE")) {
                 int res = imageCRUDService.realDeleteImage(username, imageId);
                 if (res != 0) {
                     try {
@@ -86,7 +86,7 @@ public class ImageService {
                     return "删除成功！";
                 }
 
-            } else if (IMAGE_DELETE_TYPE.equals("false")) {
+            } else if (IMAGE_DELETE_TYPE.equals("FALSE")) {
                 int res = imageCRUDService.virtualDeleteImage(username, imageId);
                 if (res != 0) {
                     return "删除成功！";
@@ -117,7 +117,7 @@ public class ImageService {
         logger.debug(image.toString());
         if (image.getOwnerUsername().equals(username)) {
             String IMAGE_DELETE_TYPE = myConfigItemMapper.selectConfigValueByName("image_delete_type");
-            if (IMAGE_DELETE_TYPE.equals("true")) {
+            if (IMAGE_DELETE_TYPE.equals("TRUE")) {
                 int res = imageCRUDService.realDeleteImage(username, imageId);
                 if (res != 0) {
                     try {
@@ -135,7 +135,7 @@ public class ImageService {
                     return "删除成功！";
                 }
 
-            } else if (IMAGE_DELETE_TYPE.equals("false")) {
+            } else if (IMAGE_DELETE_TYPE.equals("FALSE")) {
                 int res = imageCRUDService.virtualDeleteImage(username, imageId);
                 if (res != 0) {
                     return "删除成功！";
